@@ -23,7 +23,8 @@ DBFile::~DBFile () {
 
 int DBFile::Create (const char *f_path, fType f_type, void *startup) {
     printf("DBFile::Create\n");
-    FATALIF(db!=NULL, "File already opened.");
+    //FATALIF(db!=NULL, "File already opened.");
+    CHECKOPENFILE(db);
     createFile(f_type);
     char *fPath = strdup(f_path);
     db->file.Open(0, fPath);
@@ -95,5 +96,6 @@ void DBFile::createFile(fType ftype) {
         case sorted: break;
         default: db = NULL;
     }
-    FATALIF(db==NULL, "File Type is Invalid.");
+    //FATALIF(db==NULL, "File Type is Invalid.");
+    CHECKFILETYPE(db);
 }
