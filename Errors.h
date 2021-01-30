@@ -65,6 +65,29 @@
 }
 
 
+/* my 2 implementations of fatalif */
+#define CHECKOPENFILE(condition) {\
+	if (condition!=NULL) {\
+		printf("no ned to create already opened");\
+		printf("\n");\
+		assert(1==2);\
+		exit(-1);\
+	}\
+}
+
+#define CHECKFILETYPE(condition) {\
+	if (condition==NULL) {\
+		printf("Invalid File Type");\
+		printf("\n");\
+		assert(1==2);\
+		exit(-1);\
+	}\
+}
+
+
+
+
+
 /* macro to print a warning */
 /* the errors are sent to standard error */
 #define WARNING(msg...) {\
