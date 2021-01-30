@@ -54,10 +54,10 @@
 
 
 /* macro to halt the program if a condition is satisfied */
-#define FATALIF(expr,msg...) {\
-	if (expr) {\
-		printf("FATAL [%s:%d] ", __FILE__, __LINE__);\
-		printf(msg);\
+#define FATALIF(expr) {\
+	if (expr!=NULL) {\
+		
+		printf("File already is opened");\
 		printf("\n");\
 		assert(1==2);\
 		exit(-1);\
