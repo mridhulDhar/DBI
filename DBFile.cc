@@ -23,7 +23,7 @@ DBFile::~DBFile () {
 
 int DBFile::Create (const char *f_path, fType f_type, void *startup) {
     printf("DBFile::Create\n");
-    FATALIF(db);
+    FATALIF(db!=NULL, "File already opened.");
     createFile(f_type);
     char *fPath = strdup(f_path);
     db->file.Open(0, fPath);
