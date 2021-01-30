@@ -30,10 +30,10 @@ int DBFile::Create (const char *f_path, fType f_type, void *startup) {
     // create file function below --------
     
     printf("creating file now\n");
-    if(ftype == heap){
+    if(f_type == heap){
         db = new Heap();
     }
-    else if(ftype == sorted){
+    else if(f_type == sorted){
         // to implement
     }
     else{
