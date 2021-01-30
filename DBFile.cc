@@ -63,14 +63,51 @@ void DBFile::Load (Schema &f_schema, const char *loadpath) {
 
 int DBFile::Open (const char* fpath) {
     printf("DBFile::OPEN\n");
-    FATALIF(db!=NULL, "File already opened.");
-    int ftype = heap;
+    //FATALIF(db!=NULL, "File already opened.");
+    CHECKOPENFILE(db);
+    //int ftype = heap;
+    
+    // my implementation of ifstream--------
+    int f_type_string=heap;
+    fType f_type;
+    ifstream ifs;
+    std::string filePath= (db->parseTableName(fpath)).c_str();
+    ifs.open(filePath);
+    if(ifs.is_open()){
+        ifs >> f_type_string;
+        ifs.close();
+    }
+    f_type=static_cast<fType>(f_type_string);
+    //-------------------------------------
+    
+    /*
     ifstream ifs((db->parseTableName(fpath)).c_str());
     if (ifs) {
         ifs >> ftype;
         ifs.close();
     }
-    createFile(static_cast<fType>(ftype));
+    */
+    //createFile(static_cast<fType>(ftype));
+    
+    // create file implementation below---
+    
+     printf("creating file now\n");
+    if(f_type == heap){
+        db = new Heap();
+    }
+    else if(f_type == sorted){
+        // to implement
+    }
+    else{
+        db=NULL;
+    }
+    
+    CHECKFILETYPE(db);
+    
+    
+    //----------------------------------------
+    
+    
     char *fPath = strdup(fpath);
     db->file.Open(1, fPath);
     return 1;
