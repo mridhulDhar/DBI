@@ -25,7 +25,25 @@ int DBFile::Create (const char *f_path, fType f_type, void *startup) {
     printf("DBFile::Create\n");
     //FATALIF(db!=NULL, "File already opened.");
     CHECKOPENFILE(db);
-    createFile(f_type);
+    //createFile(f_type);
+    
+    // create file function below --------
+    
+    printf("creating file now\n");
+    if(ftype == heap){
+        db = new Heap();
+    }
+    else if(ftype == sorted){
+        // to implement
+    }
+    else{
+        db=NULL;
+    }
+    
+    CHECKFILETYPE(db);
+    
+    
+    //-----------------------------
     char *fPath = strdup(f_path);
     db->file.Open(0, fPath);
     return 1;
@@ -89,6 +107,7 @@ int DBFile::GetNext (Record &fetchme, CNF &cnf, Record &literal) {
     return db->GetNext(fetchme, cnf, literal);
 }
 
+/*
 void DBFile::createFile(fType ftype) {
     printf("DBFile::createFILE\n");
     switch (ftype) {
@@ -99,3 +118,4 @@ void DBFile::createFile(fType ftype) {
     //FATALIF(db==NULL, "File Type is Invalid.");
     CHECKFILETYPE(db);
 }
+*/
