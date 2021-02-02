@@ -50,8 +50,11 @@ int DBFile::Create (const char *f_path, fType f_type, void *startup) {
 }
 
 void DBFile::Load (Schema &f_schema, const char *loadpath) {
-    printf("DBFile::LOAD\n");
-    mode = write;
+    //printf("DBFile::LOAD\n");
+    if(mode!=write){
+        mode = write;
+    }
+        
     FILE* input_file = fopen(loadpath, "r");
     FATALIF(input_file==NULL, loadpath);
     Record nextRecord;
