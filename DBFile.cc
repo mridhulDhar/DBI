@@ -64,8 +64,9 @@ void DBFile::Load (Schema &f_schema, const char *loadpath) {
     
     // ------------------------------------------------------------
     FILE* input_file = fopen(loadpath, "r");
-    FATALIF(input_file==NULL, loadpath);
+    //FATALIF(input_file==NULL, loadpath);
     
+    CHECKOPENFILEPATH(input_file,loadpath);
     Record nextRecord;
     db->page.EmptyItOut();
     while (nextRecord.SuckNextRecord(&f_schema, input_file)) {
