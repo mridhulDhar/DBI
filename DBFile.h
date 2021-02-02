@@ -22,6 +22,7 @@ public:
 	virtual void MoveFirst ();
 	virtual void Add (Record &addme);
 	int GetNext (Record &fetchme);
+	bool isFileOpen;
 	virtual int GetNext (Record &fetchme, CNF &cnf, Record &literal);
 protected:
 	std::string parseTableName(const char* fpath) {
