@@ -152,6 +152,10 @@ int DBFile::Close () {
 
 void DBFile::Add (Record &rec) {
     //printf("DBFile::ADD,");
+    if (!isFileOpen){
+        cerr << "Trying to load a file which is not open!";
+        exit(1);
+    }
     db->Add(rec);
 }
 
