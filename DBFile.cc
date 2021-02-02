@@ -46,12 +46,20 @@ int DBFile::Create (const char *f_path, fType f_type, void *startup) {
     //-----------------------------
     char *fPath = strdup(f_path);
     db->file.Open(0, fPath);
+    isFileOpen = true;
     return 1;
 }
 
 void DBFile::Load (Schema &f_schema, const char *loadpath) {
     //printf("DBFile::LOAD\n");
     // new implementation -----------------------------------------
+    
+    if (!isFileOpen){
+        cerr << "Trying to load a file which is not open!";
+        exit(1);
+    }
+    
+    
     if (mode == read ) {
         if( page.getNumRecs() > 0){
             page.EmptyItOut();
