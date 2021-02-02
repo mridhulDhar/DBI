@@ -156,6 +156,12 @@ void Page :: FromBinary (char *bits) {
 	delete temp;
 }
 
+
+int Page :: getNumRecs() {
+	return this->numRecs;
+}
+
+
 File :: File () {
 }
 
