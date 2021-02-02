@@ -51,12 +51,21 @@ int DBFile::Create (const char *f_path, fType f_type, void *startup) {
 
 void DBFile::Load (Schema &f_schema, const char *loadpath) {
     //printf("DBFile::LOAD\n");
+    // new implementation -----------------------------------------
+    if (mode == read ) {
+        if( page.getNumRecs() > 0){
+            page.EmptyItOut();
+        }
+    }
+    
     if(mode!=write){
         mode = write;
     }
-        
+    
+    // ------------------------------------------------------------
     FILE* input_file = fopen(loadpath, "r");
     FATALIF(input_file==NULL, loadpath);
+    
     Record nextRecord;
     db->page.EmptyItOut();
     while (nextRecord.SuckNextRecord(&f_schema, input_file)) {
