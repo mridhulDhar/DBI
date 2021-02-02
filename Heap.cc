@@ -22,7 +22,16 @@ int Heap::Close () {
 
 void Heap::Add (Record& record) {
     //printf("HEAP::ADD,");
-    mode = write;
+    if (mode == read ) {
+            if( page.getNumRecs() > 0){
+                page.EmptyItOut();
+            }
+    }
+    
+    if(mode!=write){
+        mode = write;    
+    }
+    
     if(!page.Append(&record)) {
         file.addPage(&page);
         page.EmptyItOut();
