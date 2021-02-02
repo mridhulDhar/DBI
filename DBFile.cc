@@ -131,6 +131,7 @@ int DBFile::Open (const char* fpath) {
     
     char *fPath = strdup(fpath);
     db->file.Open(1, fPath);
+    isFileOpen = true;
     return 1;
 }
 
@@ -140,7 +141,12 @@ void DBFile::MoveFirst () {
 }
 
 int DBFile::Close () {
+    if (!isFileOpen) {
+        cout << "trying to close a file which is not open!"<<endl;
+        return 0;
+    }
     printf("DBFile::Close\n");
+    isFileOpen = false;
     db->Close();
 }
 
