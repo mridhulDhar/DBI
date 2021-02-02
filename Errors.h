@@ -75,6 +75,15 @@
 	}\
 }
 
+#define CHECKOPENFILEPATH(condition,msg...) {\
+	if (condition==NULL) {\
+		printf(msg);\
+		printf("\n");\
+		assert(1==2);\
+		exit(-1);\
+	}\
+}
+
 #define CHECKFILETYPE(condition) {\
 	if (condition==NULL) {\
 		printf("Invalid File Type");\
