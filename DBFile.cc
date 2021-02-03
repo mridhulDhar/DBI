@@ -21,69 +21,14 @@ DBFile::~DBFile () {
 
 }
 
-int DBFile::Create (const char *f_path, fType f_type, void *startup) {
-    printf("DBFile::Create\n");
-    //FATALIF(db!=NULL, "File already opened.");
-    CHECKOPENFILE(db);
-    //createFile(f_type);
-    
-    // create file function below --------
-    
-    printf("creating file now\n");
-    if(f_type == heap){
-        db = new Heap();
-    }
-    else if(f_type == sorted){
-        // to implement
-    }
-    else{
-        db=NULL;
-    }
-    
-    CHECKFILETYPE(db);
-    
-    
-    //-----------------------------
-    char *fPath = strdup(f_path);
-    db->file.Open(0, fPath);
-    isFileOpen = true;
-    return 1;
+
+
+void DBFile::MoveFirst () {
+    db->MoveFirst();
 }
 
-void DBFile::Load (Schema &f_schema, const char *loadpath) {
-    //printf("DBFile::LOAD\n");
-    // new implementation -----------------------------------------
-    
-    if (!isFileOpen){
-        cerr << "Trying to load a file which is not open!";
-        exit(1);
-    }
-    
-    
-    if (mode == read ) {
-        if( page.getNumRecs() > 0){
-            page.EmptyItOut();
-        }
-    }
-    
-    if(mode!=write){
-        mode = write;
-    }
-    
-    // ------------------------------------------------------------
-    FILE* input_file = fopen(loadpath, "r");
-    //FATALIF(input_file==NULL, loadpath);
-    
-    CHECKOPENFILEPATH(input_file,loadpath);
-    Record nextRecord;
-    db->page.EmptyItOut();
-    while (nextRecord.SuckNextRecord(&f_schema, input_file)) {
-        Add(nextRecord);
-    }
-}
 
 int DBFile::Open (const char* fpath) {
-    printf("DBFile::OPEN\n");
     //FATALIF(db!=NULL, "File already opened.");
     CHECKOPENFILE(db);
     //int ftype = heap;
@@ -135,10 +80,96 @@ int DBFile::Open (const char* fpath) {
     return 1;
 }
 
-void DBFile::MoveFirst () {
-    printf("DBFile::MoveFirst\n");
-    db->MoveFirst();
+
+
+
+
+void DBFile::Add (Record &rec) {
+    if (!isFileOpen){
+        cerr << "Trying to load a file which is not open!";
+        exit(1);
+    }
+    db->Add(rec);
 }
+
+
+
+void DBFile::Load (Schema &f_schema, const char *filepath) {
+    // new implementation -----------------------------------------
+    
+    if (!isFileOpen){
+        cerr << "Trying to load a file which is not open!";
+        exit(1);
+    }
+    
+    
+    if (mode == read ) {
+        if( page.getNumRecs() > 0){
+            page.EmptyItOut();
+        }
+    }
+    
+    if(mode!=write){
+        mode = write;
+    }
+    
+    // ------------------------------------------------------------
+    FILE* i_file = fopen(filepath, "r");
+    //FATALIF(input_file==NULL, loadpath);
+    
+    CHECKOPENFILEPATH(i_file,filepath);
+    Record nextRecord;
+    db->page.EmptyItOut();
+    while (nextRecord.SuckNextRecord(&f_schema, i_file)) {
+        Add(nextRecord);
+    }
+}
+
+
+int DBFile::GetNext (Record &fetchme) {
+    while (!db->page.GetFirst(&fetchme)) {
+        if(++db->pageIdx > db->file.lastIndex()) {
+            return 0;
+        }
+        db->file.GetPage(&db->page, db->pageIdx);
+    }
+    return 1;
+}
+
+
+
+
+
+
+int DBFile::Create (const char *file_path, fType file_type, void *startup) {
+    //FATALIF(db!=NULL, "File already opened.");
+    CHECKOPENFILE(db);
+    //createFile(f_type);
+    
+    // create file function below --------
+    
+    printf("creating file now\n");
+    if(file_type == heap){
+        db = new Heap();
+    }
+    else if(file_type == sorted){
+        // to implement
+    }
+    else{
+        db=NULL;
+    }
+    
+    CHECKFILETYPE(db);
+    
+    
+    //-----------------------------
+    char *fPath = strdup(file_path);
+    db->file.Open(0, fPath);
+    isFileOpen = true;
+    return 1;
+}
+
+
 
 int DBFile::Close () {
     if (!isFileOpen) {
@@ -150,28 +181,11 @@ int DBFile::Close () {
     db->Close();
 }
 
-void DBFile::Add (Record &rec) {
-    //printf("DBFile::ADD,");
-    if (!isFileOpen){
-        cerr << "Trying to load a file which is not open!";
-        exit(1);
-    }
-    db->Add(rec);
-}
 
-int DBFile::GetNext (Record &fetchme) {
-    //printf("DBFile::GET_NEXT\n");
-    while (!db->page.GetFirst(&fetchme)) {
-        if(++db->pageIdx > db->file.lastIndex()) {
-            return 0;
-        }
-        db->file.GetPage(&db->page, db->pageIdx);
-    }
-    return 1;
-}
+
+
 
 int DBFile::GetNext (Record &fetchme, CNF &cnf, Record &literal) {
-    //printf("DBFile::GET_NEXT__\n");
     return db->GetNext(fetchme, cnf, literal);
 }
 
