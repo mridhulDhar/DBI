@@ -25,10 +25,10 @@ public:
 	bool isFileOpen;
 	virtual int GetNext (Record &fetchme, CNF &cnf, Record &literal);
 protected:
-	std::string parseTableName(const char* fpath) {
-		std::string path(fpath);
-		size_t start = path.find_last_of('/'),
-			end = path.find_last_of('.');
+	std::string parseTableName(const char* filepath) {
+		std::string path(filepath);
+		size_t start = path.find_last_of('/');
+		size_t end = path.find_last_of('.');
 		return path.substr(start+1, end-start-1);
 	}
 	enum Mode { read, write } mode;
